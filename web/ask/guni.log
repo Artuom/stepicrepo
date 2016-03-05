@@ -1,0 +1,28 @@
+2016-03-05 09:24:07 [3323] [INFO] Starting gunicorn 17.5
+2016-03-05 09:24:07 [3323] [INFO] Listening at: http://127.0.0.1:5000 (3323)
+2016-03-05 09:24:07 [3323] [INFO] Using worker: sync
+2016-03-05 09:24:07 [3328] [INFO] Booting worker with pid: 3328
+2016-03-05 09:24:07 [3329] [INFO] Booting worker with pid: 3329
+2016-03-05 09:24:07 [3330] [INFO] Booting worker with pid: 3330
+Failed to find application: 'ask.wsgi'
+2016-03-05 09:24:08 [3328] [INFO] Worker exiting (pid: 3328)
+Failed to find application: 'ask.wsgi'
+2016-03-05 09:24:08 [3329] [INFO] Worker exiting (pid: 3329)
+Failed to find application: 'ask.wsgi'
+2016-03-05 09:24:08 [3330] [INFO] Worker exiting (pid: 3330)
+Traceback (most recent call last):
+  File "/usr/bin/gunicorn", line 9, in <module>
+    load_entry_point('gunicorn==17.5', 'console_scripts', 'gunicorn')()
+  File "/usr/lib/python2.7/dist-packages/gunicorn/app/wsgiapp.py", line 42, in run
+    WSGIApplication("%(prog)s [OPTIONS] APP_MODULE").run()
+  File "/usr/lib/python2.7/dist-packages/gunicorn/app/base.py", line 144, in run
+    Arbiter(self).run()
+  File "/usr/lib/python2.7/dist-packages/gunicorn/arbiter.py", line 196, in run
+    self.halt(reason=inst.reason, exit_status=inst.exit_status)
+  File "/usr/lib/python2.7/dist-packages/gunicorn/arbiter.py", line 291, in halt
+    self.stop()
+  File "/usr/lib/python2.7/dist-packages/gunicorn/arbiter.py", line 334, in stop
+    self.reap_workers()
+  File "/usr/lib/python2.7/dist-packages/gunicorn/arbiter.py", line 433, in reap_workers
+    raise HaltServer(reason, self.APP_LOAD_ERROR)
+gunicorn.errors.HaltServer: <HaltServer 'App failed to load.' 4>
