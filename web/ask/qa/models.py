@@ -9,8 +9,8 @@ from django.contrib.auth.models import User
 class Question(models.Model):
     title = models.CharField(max_length=255)
     text = models.TextField()
-    added_at = models.DateTimeField(blank=True)
-    rating = models.IntegerField()
+    added_at = models.DateTimeField(auto_now_add=True)
+    rating = models.IntegerField(default=1)
     author = models.ForeignKey(User)
     likes = User()
     def __str__(self):
@@ -23,7 +23,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     text = models.TextField()
-    added_at = models.DateTimeField(blank=True)
+    added_at = models.DateTimeField(auto_now_add=True)
     question = models.ForeignKey(Question, null=True,
         on_delete = models.DO_NOTHING)
     author = models.ForeignKey(User)
