@@ -28,4 +28,4 @@ class Answer(models.Model):
         on_delete = models.DO_NOTHING)
     author = models.ForeignKey(User)
     def __str__(self):
-        return self.title
+        return self.text

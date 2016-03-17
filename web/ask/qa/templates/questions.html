@@ -1,6 +1,6 @@
 {%for question in questions%}
     {{question.title}}
-    <a href="{{question.id}}">link</a>
+    <a href="question/{{question.id}}">link</a>
 {%endfor%}
 <nav><ul class="pagination">
 {% for p in paginator.page_range %}
