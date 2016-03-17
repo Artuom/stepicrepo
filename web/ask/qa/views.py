@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 from django.core.paginator import Paginator
+from models import Question, Answer
 
 # Create your views here.
 def test(request, *args, **kwargs):
@@ -9,26 +10,26 @@ def test(request, *args, **kwargs):
 
 @require_GET
 def questions_all(request):
-    question = Question.objects.order_by('added_at')
+    questions = Question.objects.order_by('added_at')
     limit = request.GET.get('limit', 10)
     page = request.GET.get('page', 1)
-    paginator = Paginator(posts, limit)
+    paginator = Paginator(questions, limit)
     paginator.baseurl = '/?page='
     page = paginator.page(page)
-    return render(request, '/templates/questions.html', {
+    return render(request, 'questions.html', {
         'questions': page.object_list,
         'paginator': paginator, 'page': page,
     })
 
 @require_GET
-def popular_questions():
-    question = Question.objects.order_by('-rating')
+def popular_questions(request):
+    questions = Question.objects.order_by('-rating')
     limit = request.GET.get('limit', 10)
     page = request.GET.get('page', 1)
-    paginator = Paginator(posts, limit)
+    paginator = Paginator(questions, limit)
     paginator.baseurl = '/popular/?page='
     page = paginator.page(page)
-    return render(request, '/templates/questions.html', {
+    return render(request, 'questions.html', {
         'questions': page.object_list,
         'paginator': paginator, 'page': page,
     })
@@ -40,7 +41,7 @@ def question_details(request, question_id):
         answer = answer.question_set.all()
     except Answer.DoesNotExist:
         answer = None
-    return render(request, '/templates/question_details.html', {
+    return render(request, 'question_details.html', {
     'question': question,
     'answer': answer,
     })
