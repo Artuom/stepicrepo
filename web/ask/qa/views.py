@@ -38,7 +38,8 @@ def popular_questions(request):
 def question_details(request, question_id):
     question = get_object_or_404(Question, question_id)
     try:
-        answer = answer.question_set.all()
+        #answer = Answer.question_set.all()
+        answer = Answer.objects.filter(question=question)
     except Answer.DoesNotExist:
         answer = None
     return render(request, 'question_details.html', {
