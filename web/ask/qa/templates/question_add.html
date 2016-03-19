@@ -1,13 +1,7 @@
-{% csrf_token %}
-{{question.title}}
-{{question.text}}
-{%for i in answer%}
-  {{i.text}}
-{%endfor%}
 {% for e in form.non_field_errors %}
   <div class="alert alert-danger">{{ e }}</div>
 {% endfor %}
-<form class="form-horizontal" method="post" action="/answer/{{question.id}}">
+<form class="form-horizontal" method="post" action="/ask">
   {% csrf_token %}
   <fieldset>
   {% for field in form %}
@@ -17,7 +11,6 @@
       <div class="controls">{{ field }}</div>
     </div>
   {% endfor %}
-  <input type="hidden" name = "question" value="{{question.id}}">
   </fieldset>
   <div class="form-actions">
     <button type="submit" class="btn btn-primary">Сохранить</button>

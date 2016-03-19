@@ -29,3 +29,5 @@ class Answer(models.Model):
     author = models.ForeignKey(User)
     def __str__(self):
         return self.text
+    def get_absolute_url(self):
+        return '/question/%d/' % self.question.id
