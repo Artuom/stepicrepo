@@ -78,17 +78,13 @@ class RegistrationForm(forms.Form):
             raise forms.ValidationError, "%s already exists" % username
         return username"""
 
-class Register(UserCreationForm):
-    password = forms.CharField(label=("Password"),
-        strip=False,
-        widget=forms.PasswordInput)
-    password1=None
-    password2=None
+class Register(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(label=("Password"),widget=forms.PasswordInput)
 
-    def clean_password2(self):
-        print "in clean_password2"
-        self.password = password
-        return self.password
+    #password1=None
+    #password2=None
+
 
     def save(self):
         print "cleaned_data====", self.cleaned_data

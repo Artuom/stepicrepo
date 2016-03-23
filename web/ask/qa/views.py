@@ -102,7 +102,7 @@ def signup(request):
     if request.method == 'POST':
         form = Register(request.POST)
         #form = RegistrationForm(request.POST)
-        #print form
+        print "form validation====",form.is_valid()
         if form.is_valid():
             print "valid"
             new_user = form.save()
