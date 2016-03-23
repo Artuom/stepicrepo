@@ -3,6 +3,7 @@ from models import Question, Answer
 from django.contrib.auth.models import User
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import UserCreationForm
 
 class AskForm(forms.Form):
     title = forms.CharField(max_length=100)
@@ -76,3 +77,25 @@ class RegistrationForm(forms.Form):
         if User.objects.filter(username=username).count() > 0:
             raise forms.ValidationError, "%s already exists" % username
         return username"""
+
+class Register(UserCreationForm):
+    password = forms.CharField(label=("Password"),
+        strip=False,
+        widget=forms.PasswordInput)
+    password1=None
+    password2=None
+
+    def clean_password2(self):
+        print "in clean_password2"
+        self.password = password
+        return self.password
+
+    def save(self):
+        print "cleaned_data====", self.cleaned_data
+        #user = super(UserCreationForm, self).save(commit=False)
+        user = User(**self.cleaned_data)
+        print user
+        password = str(self.cleaned_data['password'])
+        user.set_password(password)
+        user.save()
+        return user

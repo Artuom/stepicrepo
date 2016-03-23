@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.http import require_GET
 from django.core.paginator import Paginator
 from models import Question, Answer, Session
-from forms import AskForm, AnswerForm, RegistrationForm
+from forms import AskForm, AnswerForm, RegistrationForm, Register
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login
@@ -100,7 +100,7 @@ def question_add(request):
 def signup(request):
     print request.POST
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = Register(request.POST)
         #form = RegistrationForm(request.POST)
         #print form
         if form.is_valid():
@@ -109,7 +109,7 @@ def signup(request):
             return HttpResponseRedirect("/")
     else:
         print "not valid"
-        form = UserCreationForm()
+        form = Register()
         #form = RegistrationForm()
     return render(request, "register.html", {
         'form': form,
