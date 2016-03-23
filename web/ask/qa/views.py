@@ -102,10 +102,26 @@ def signup(request):
     if request.method == 'POST':
         form = Register(request.POST)
         #form = RegistrationForm(request.POST)
+        print form
         print "form validation====",form.is_valid()
         if form.is_valid():
             print "valid"
             new_user = form.save()
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            url = request.POST.get('continue', '/')
+            sessid = do_login(username, password)
+            print "sessid", sessid
+            if sessid:
+                response = HttpResponseRedirect(url)
+                response.set_cookie('sessid', sessid,
+                domain='localhost', httponly=True,
+                expires = datetime.now()+timedelta(days=5)
+                )
+                print "response", response
+                return response
+            else:
+                error = u'Неверный логин / пароль'
             return HttpResponseRedirect("/")
     else:
         print "not valid"
