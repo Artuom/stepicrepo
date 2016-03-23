@@ -44,7 +44,7 @@ def popular_questions(request):
 
 
 def question_details(request, question_id):
-    author_id = Session.objects.get(key = request.COOKIES.get('cookie')).user_id
+    author_id = Session.objects.get(key = request.COOKIES.get('sessionid')).user_id
     if request.method == 'POST':
         form = AnswerForm(request.POST)
         print "form====",form
@@ -82,22 +82,27 @@ def question_details(request, question_id):
 
 
 def question_add(request):
-    author_id = Session.objects.get(key = request.COOKIES.get('cookie')).user_id
-    print request.COOKIES
-    #print author_id
-    if request.method == "POST":
-        form = AskForm(request.POST)
-        if form.is_valid():
-            question = form.save()
-            url = question.get_absolute_url()
-            return HttpResponseRedirect(url)
+    try:
+        author_id = Session.objects.get(key = request.COOKIES.get('sessionid')).user_id
+        print author_id
+    except:
+        author_id = None
+    if author_id is not None:
+        #print author_id
+        if request.method == "POST":
+            form = AskForm(request.POST)
+            if form.is_valid():
+                question = form.save()
+                url = question.get_absolute_url()
+                return HttpResponseRedirect(url)
+        else:
+            form = AskForm()
+        return render(request, 'question_add.html',{
+            'form': form,
+            'author':author_id,
+        })
     else:
-        form = AskForm()
-    return render(request, 'question_add.html',{
-        'form': form,
-        'author':author_id,
-    })
-
+        return HttpResponseRedirect('/login')
 
 def signup(request):
     print request.POST
@@ -121,7 +126,7 @@ def signup(request):
             if sessid:
                 print "OK"
                 response = HttpResponseRedirect(url)
-                response.set_cookie("cookie", sessid, httponly=True,
+                response.set_cookie("sessionid", sessid, httponly=True,
                 expires = datetime.now()+timedelta(days=5)
                 )
                 print "response", response
@@ -148,7 +153,7 @@ def login_view(request):
         print "sessid", sessid
         if sessid:
             response = HttpResponseRedirect(url)
-            response.set_cookie('sessid', sessid,
+            response.set_cookie('sessionid', sessid,
             domain='localhost', httponly=True,
             expires = datetime.now()+timedelta(days=5)
             )
