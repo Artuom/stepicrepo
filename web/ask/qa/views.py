@@ -44,7 +44,7 @@ def popular_questions(request):
 
 
 def question_details(request, question_id):
-    author_id = Session.objects.get(key = request.COOKIES.get('sessid')).user_id
+    author_id = Session.objects.get(key = request.COOKIES.get('cookie')).user_id
     if request.method == 'POST':
         form = AnswerForm(request.POST)
         print "form====",form
@@ -82,7 +82,9 @@ def question_details(request, question_id):
 
 
 def question_add(request):
-    author_id = Session.objects.get(key = request.COOKIES.get('sessid')).user_id
+    author_id = Session.objects.get(key = request.COOKIES.get('cookie')).user_id
+    print request.COOKIES
+    #print author_id
     if request.method == "POST":
         form = AskForm(request.POST)
         if form.is_valid():
@@ -107,26 +109,26 @@ def signup(request):
         if form.is_valid():
             print "valid"
             new_user = form.save()
-            username = request.POST.get('username')
+            #username = request.POST.get('username')
             url = request.POST.get('continue', '/')
             session = Session()
             session.key = "sdfsdfsdfkgkvnblkdfhlsghfhfvbnkn" + str(random.randint(1,100))
-            session.user = User.objects.get(username=username)
+            session.user = new_user
             session.expires = datetime.now() + timedelta(days=5)
             session.save()
             sessid = session.key
             print "sessid", sessid
             if sessid:
+                print "OK"
                 response = HttpResponseRedirect(url)
-                response.set_cookie('sessid', sessid,
-                domain='.', httponly=True,
+                response.set_cookie("cookie", sessid, httponly=True,
                 expires = datetime.now()+timedelta(days=5)
                 )
                 print "response", response
                 return response
             else:
                 error = u'Неверный логин / пароль'
-            return HttpResponseRedirect("/")
+
     else:
         print "not valid"
         form = Register()
