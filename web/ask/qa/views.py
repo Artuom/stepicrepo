@@ -108,14 +108,18 @@ def signup(request):
             print "valid"
             new_user = form.save()
             username = request.POST.get('username')
-            password = request.POST.get('password')
             url = request.POST.get('continue', '/')
-            sessid = do_login(username, password)
+            session = Session()
+            session.key = "sdfsdfsdfkgkvnblkdfhlsghfhfvbnkn" + str(random.randint(1,100))
+            session.user = User.objects.get(username=username)
+            session.expires = datetime.now() + timedelta(days=5)
+            session.save()
+            sessid = session.key
             print "sessid", sessid
             if sessid:
                 response = HttpResponseRedirect(url)
                 response.set_cookie('sessid', sessid,
-                domain='localhost', httponly=True,
+                domain='.', httponly=True,
                 expires = datetime.now()+timedelta(days=5)
                 )
                 print "response", response
@@ -131,21 +135,6 @@ def signup(request):
         'form': form,
     })
 
-"""def login_view(request):
-    print "request to login", request.POST
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authentificate(username=username, password=password)
-        #form = LoginForm(request.POST)
-
-        return HttpResponseRedirect("/")
-    else:
-        print "not valid"
-        form = LoginForm()
-    return render(request, "login.html", {
-        'form': form,
-    })"""
 
 def login_view(request):
     error = ''
@@ -161,7 +150,7 @@ def login_view(request):
             domain='localhost', httponly=True,
             expires = datetime.now()+timedelta(days=5)
             )
-            print "response", response
+            print "response", response.cookie
             return response
         else:
             error = u'Неверный логин / пароль'
@@ -174,9 +163,6 @@ def do_login(username, password):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         return None
-    """hashed_pass = salt_and_hash(password)
-    if user.password != hashed_pass:
-        return None"""
     user = authenticate(username=username, password=password)
     print "USER IS",user
     if not user:
