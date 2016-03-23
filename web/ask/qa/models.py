@@ -16,7 +16,7 @@ class Question(models.Model):
     def __str__(self):
         return self.title
     def get_absolute_url(self):
-        return '/question/%d/' % self.pk
+        return '/question/%d' % self.pk
     class Meta:
         db_table = 'blogposts'
         ordering = ['-added_at']
@@ -26,8 +26,13 @@ class Answer(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     question = models.ForeignKey(Question, null=True,
         on_delete = models.DO_NOTHING)
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, default=1)
     def __str__(self):
         return self.text
     def get_absolute_url(self):
         return '/question/%d/' % self.question.id
+
+class Session(models.Model):
+    key = models.CharField(max_length=255, unique=True)
+    user = models.ForeignKey(User)
+    expires = models.DateTimeField()
