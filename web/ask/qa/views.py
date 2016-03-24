@@ -89,6 +89,7 @@ def question_add(request):
         #print author_id
         if request.method == "POST":
             form = AskForm(request.POST)
+            form.author = User.objects.filter(id=author_id)[0].id
             if form.is_valid():
                 question = form.save()
                 url = question.get_absolute_url()

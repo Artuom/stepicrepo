@@ -9,11 +9,13 @@ class AskForm(forms.Form):
     title = forms.CharField(max_length=100)
     text = forms.CharField(widget=forms.Textarea)
     author = forms.IntegerField(widget=forms.HiddenInput())
+    #author = ''
     """def clean_text(self):
         print "in clean data"
         #text = self.cleaned_data['text']
         #print "txt = ", text"""
     def save(self):
+        print self.cleaned_data['author']
         id = int(self.cleaned_data['author'])
         self.cleaned_data['author'] = User.objects.filter(id = id)[0]
         question = Question(**self.cleaned_data)
