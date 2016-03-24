@@ -18,30 +18,15 @@ def test(request, *args, **kwargs):
 
 @require_GET
 def questions_all(request):
-    questions = Question.objects.order_by('-added_at')
-    limit = request.GET.get('limit', 10)
-    page = request.GET.get('page', 1)
-    paginator = Paginator(questions, limit)
-    paginator.baseurl = '/?page='
-    page = paginator.page(page)
     return render(request, 'questions.html', {
-        'questions': page.object_list,
-        'paginator': paginator, 'page': page,
+    'questions': paginate(request, Question.objects.resent_questions()),
     })
 
 @require_GET
 def popular_questions(request):
-    questions = Question.objects.order_by('-rating')
-    limit = request.GET.get('limit', 10)
-    page = request.GET.get('page', 1)
-    paginator = Paginator(questions, limit)
-    paginator.baseurl = '/popular/?page='
-    page = paginator.page(page)
-    return render(request, 'questions.html', {
-        'questions': page.object_list,
-        'paginator': paginator, 'page': page,
+    qreturn render(request, 'questions.html', {
+    'questions': paginate(request, Question.objects.popular_questions()),
     })
-
 
 def question_details(request, question_id):
     author_id = Session.objects.get(key = request.COOKIES.get('sessionid')).user_id
@@ -179,4 +164,22 @@ def do_login(username, password):
     session.expires = datetime.now() + timedelta(days=5)
     session.save()
     return session.key
+
+def paginate(request, qs):
+	try:
+		limit = int(request.GET.get('limit', 10))
+	except ValueError:
+		limit = 10
+	if limit > 10:
+		limit = 10
+	try:
+		page = int(request.GET.get('page',1))
+	except ValueError:
+		raise Http404
+	paginator = Paginator(qs, limit)
+	try:
+		page = paginator.page(page)
+	except EmptyPage:
+		page = paginator.page(paginator.num_pages)
+	return page
 #initial={'question': question_id}
