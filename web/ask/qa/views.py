@@ -82,18 +82,17 @@ def question_details(request, question_id):
 
 
 def question_add(request):
-    try:
-        author_id = Session.objects.get(key = request.COOKIES.get('sessionid')).user_id
-        print author_id
-    except:
-        author_id = None
-    if author_id is not None:
+    author_id = Session.objects.get(key = request.COOKIES.get('sessionid')).user_id
+    print author_id
+    print request.COOKIES
+    if author_id:
         #print author_id
         if request.method == "POST":
             form = AskForm(request.POST)
             if form.is_valid():
                 question = form.save()
                 url = question.get_absolute_url()
+                print "redirected_url-====", url
                 return HttpResponseRedirect(url)
         else:
             form = AskForm()
@@ -102,7 +101,8 @@ def question_add(request):
             'author':author_id,
         })
     else:
-        return HttpResponseRedirect('/login')
+        form = AskForm()
+        return render(request, 'question_add.html', {'form':form})
 
 def signup(request):
     print request.POST
@@ -153,11 +153,9 @@ def login_view(request):
         print "sessid", sessid
         if sessid:
             response = HttpResponseRedirect(url)
-            response.set_cookie('sessionid', sessid,
-            domain='localhost', httponly=True,
+            response.set_cookie('sessionid', sessid, httponly=True,
             expires = datetime.now()+timedelta(days=5)
             )
-            print "response", response.cookie
             return response
         else:
             error = u'Неверный логин / пароль'
